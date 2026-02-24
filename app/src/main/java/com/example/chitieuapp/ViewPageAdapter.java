@@ -14,16 +14,18 @@ public class ViewPageAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position){
         switch (position){
             case 0:
-                return new Chi();
+                return new FragmentNhap();
             case 1:
-                return new Thu();
+                return new FragmentBaocao();
+            case 2:
+                return new FragmentKhac();
             default:
-                return new Chi();
+                return new FragmentNhap();
         }
     }
 
     @Override
     public int getItemCount(){
-        return 2;
+        return 3;
     }
 }
