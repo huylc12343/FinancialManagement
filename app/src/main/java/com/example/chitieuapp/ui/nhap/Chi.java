@@ -1,4 +1,4 @@
-package com.example.chitieuapp;
+package com.example.chitieuapp.ui.nhap;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.chitieuapp.R;
+
 import java.util.Calendar;
 
 public class Chi extends Fragment {
@@ -18,6 +20,7 @@ public class Chi extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private LinearLayout selectedCategory = null;
+    LinearLayout btnLuu;
 
     private String mParam1;
     private String mParam2;
@@ -50,6 +53,8 @@ public class Chi extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chi, container, false);
 
         TextView editTextDate2 = view.findViewById(R.id.editTextDate2);
+        btnLuu = view.findViewById(R.id.btnLuu);
+
 
         editTextDate2.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();

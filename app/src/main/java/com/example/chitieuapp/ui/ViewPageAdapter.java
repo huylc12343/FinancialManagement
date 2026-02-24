@@ -1,9 +1,13 @@
-package com.example.chitieuapp;
+package com.example.chitieuapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.chitieuapp.ui.baocao.FragmentBaocao;
+import com.example.chitieuapp.ui.khac.FragmentKhac;
+import com.example.chitieuapp.ui.nhap.FragmentNhap;
 
 public class ViewPageAdapter extends FragmentStateAdapter {
     public ViewPageAdapter(@NonNull FragmentActivity fragmentActivity){

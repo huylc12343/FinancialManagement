@@ -1,4 +1,4 @@
-package com.example.chitieuapp;
+package com.example.chitieuapp.ui.nhap;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.chitieuapp.R;
 
 import java.util.Calendar;
 
