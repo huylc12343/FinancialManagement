@@ -5,15 +5,21 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chitieuapp.R;
+import com.example.chitieuapp.data.database.AppDatabase;
+import com.example.chitieuapp.data.entity.ChiThu;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class Chi extends Fragment {
 
@@ -51,11 +57,69 @@ public class Chi extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chi, container, false);
+        EditText editTextNote = view.findViewById(R.id.editTextText);
+        EditText editTextMoney = view.findViewById(R.id.editTextNumber);
 
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+        new Thread(() -> {
+            List<ChiThu> list = db.chiThuDao().getAll();
+            for (ChiThu item : list) {
+                Log.d("DB_TEST", item.ghichu + " - " + item.sotien +" - "+item.ngay + " - " +item.danhmuc + " - " + (item.type == 0 ? "Chi" : "Thu"));
+            }
+        }).start();
         TextView editTextDate2 = view.findViewById(R.id.editTextDate2);
         btnLuu = view.findViewById(R.id.btnLuu);
 
+// 🔥 XỬ LÝ NÚT LƯU
+        btnLuu.setOnClickListener(v -> {
 
+            String note = editTextNote.getText().toString().trim();
+            String moneyStr = editTextMoney.getText().toString().trim();
+            String date = editTextDate2.getText().toString().trim();
+
+            if (note.isEmpty() || moneyStr.isEmpty() || date.isEmpty() || selectedCategory == null) {
+                Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int amount;
+            try {
+                amount = Integer.parseInt(moneyStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Lấy tên category từ tag hoặc text
+            String category = selectedCategory.getTag() != null
+                    ? selectedCategory.getTag().toString()
+                    : "Khác";
+
+            // type = 0 vì đây là màn hình Chi
+            ChiThu chiThu = new ChiThu(
+                    date,       // ngay
+                    note,       // ghichu
+                    amount,     // sotien
+                    category,   // danhmuc
+                    0           // type (0 = Chi)
+            );
+
+            // ⚠ Room không cho chạy DB trên main thread
+            new Thread(() -> {
+                db.chiThuDao().insert(chiThu);
+            }).start();
+
+            Toast.makeText(getContext(), "Đã lưu thành công", Toast.LENGTH_SHORT).show();
+
+            // Reset form
+            editTextNote.setText("");
+            editTextMoney.setText("");
+            editTextDate2.setText("");
+            if (selectedCategory != null) {
+                selectedCategory.setSelected(false);
+                selectedCategory = null;
+            }
+        });
         editTextDate2.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
