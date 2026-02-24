@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -16,6 +17,7 @@ public class Chi extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private LinearLayout selectedCategory = null;
 
     private String mParam1;
     private String mParam2;
@@ -63,7 +65,37 @@ public class Chi extends Fragment {
 
             datePickerDialog.show();
         });
-
+        setupCategoryButtons(view);
         return view;
+    }
+    private void setupCategoryButtons(View view) {
+        int[] btnIds = {
+                R.id.btnAn, R.id.btnDiLai, R.id.btnMuaSam,
+                R.id.btnSucKhoe, R.id.btnGiaiTri, R.id.btnHoaDon,
+                R.id.btnGiaoDuc, R.id.btnNhaO, R.id.btnKhac
+        };
+
+        for (int id : btnIds) {
+            LinearLayout btn = view.findViewById(id);
+
+            btn.setOnClickListener(v -> {
+
+                // Nếu click lại chính nó → bỏ chọn
+                if (v == selectedCategory) {
+                    v.setSelected(false);
+                    selectedCategory = null;
+                    return;
+                }
+
+                // Bỏ chọn cái cũ
+                if (selectedCategory != null) {
+                    selectedCategory.setSelected(false);
+                }
+
+                // Chọn cái mới
+                v.setSelected(true);
+                selectedCategory = (LinearLayout) v;
+            });
+        }
     }
 }
