@@ -20,4 +20,52 @@ public class ChiThu {
         this.danhmuc = danhmuc;
         this.type = type;
     }
+
+    public int getIdChiThu() {
+        return idChiThu;
+    }
+
+    public String getNgay() {
+        return ngay;
+    }
+
+    public String getGhichu() {
+        return ghichu;
+    }
+
+    public int getSotien() {
+        return sotien;
+    }
+
+    public String getDanhmuc() {
+        return danhmuc;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setIdChiThu(int idChiThu) {
+        this.idChiThu = idChiThu;
+    }
+
+    public void setNgay(String ngay) {
+        this.ngay = ngay;
+    }
+
+    public void setGhichu(String ghichu) {
+        this.ghichu = ghichu;
+    }
+
+    public void setSotien(int sotien) {
+        this.sotien = sotien;
+    }
+
+    public void setDanhmuc(String danhmuc) {
+        this.danhmuc = danhmuc;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 }

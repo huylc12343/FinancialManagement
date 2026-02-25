@@ -1,84 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
+    <!-- Nhập tháng & năm -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Nhập tháng & năm -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tháng" />
-
-            <EditText
-                android:id="@+id/editTextThangQuery"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="number"
-                android:maxLength="2"
-                android:hint="1-12" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Năm"
-                android:layout_marginStart="8dp"/>
-
-            <EditText
-                android:id="@+id/editTextNamQuery"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="number"
-                android:maxLength="4"
-                android:hint="2024" />
-
-            <Button
-                android:id="@+id/btnXem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Xem" />
-
-        </LinearLayout>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/tvThuNhapThang"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="16sp"
-            android:text="Tiền thu tháng: " />
+            android:text="Tháng" />
+
+        <EditText
+            android:id="@+id/editTextThangQuery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:maxLength="2"
+            android:hint="1-12" />
 
         <TextView
-            android:id="@+id/tvChiTieuThang"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:text="Tiền chi tháng: " />
+            android:text="Năm"
+            android:layout_marginStart="8dp"/>
 
-        <TextView
-            android:id="@+id/tvTienDu"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/editTextNamQuery"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="Tiền dư: " />
+            android:layout_weight="1"
+            android:inputType="number"
+            android:maxLength="4"
+            android:hint="2024" />
+
+        <Button
+            android:id="@+id/btnXem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Xem" />
 
     </LinearLayout>
 
-</FrameLayout>
+    <!-- Tổng quan -->
+    <TextView
+        android:id="@+id/tvThuNhapThang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:text="Tiền thu tháng: " />
+
+    <TextView
+        android:id="@+id/tvChiTieuThang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:text="Tiền chi tháng: " />
+
+    <TextView
+        android:id="@+id/tvTienDu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="Tiền dư: " />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        android:background="#CCCCCC" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chi tiết giao dịch"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Danh sách chi tiết -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewChiTiet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

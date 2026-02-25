@@ -2,6 +2,14 @@ package com.example.chitieuapp.ui.baocao;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Color;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +20,18 @@ import android.widget.Toast;
 
 import com.example.chitieuapp.R;
 import com.example.chitieuapp.data.database.AppDatabase;
+import com.example.chitieuapp.data.entity.ChiThu;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class FragmentBaocao extends Fragment {
 
     TextView tvThuNhapThang, tvChiTieuThang, tvTienDu;
     EditText editTextThang, editTextNam;
     Button btnXem;
-
+    RecyclerView recyclerView;
+    ChiThuBaoCaoAdapter adapter;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1, mParam2;
@@ -35,7 +46,43 @@ public class FragmentBaocao extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private void showEditDialog(ChiThu chiThu) {
 
+        View dialogView = LayoutInflater.from(getContext())
+                .inflate(R.layout.dialog_edit_chithu, null);
+
+        EditText edtSoTien = dialogView.findViewById(R.id.edtSoTien);
+        EditText edtGhiChu = dialogView.findViewById(R.id.edtGhiChu);
+
+        edtSoTien.setText(String.valueOf(chiThu.getSotien()));
+        edtGhiChu.setText(chiThu.getGhichu());
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Sửa giao dịch")
+                .setView(dialogView)
+                .setPositiveButton("Lưu", (dialog, which) -> {
+
+                    int soTien = Integer.parseInt(edtSoTien.getText().toString());
+                    String ghiChu = edtGhiChu.getText().toString();
+
+                    chiThu.setSotien(soTien);
+                    chiThu.setGhichu(ghiChu);
+
+                    new Thread(() -> {
+                        AppDatabase.getInstance(requireContext())
+                                .chiThuDao()
+                                .update(chiThu);
+
+                        requireActivity().runOnUiThread(() -> {
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(getContext(), "Đã cập nhật!", Toast.LENGTH_SHORT).show();
+                        });
+                    }).start();
+
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +96,8 @@ public class FragmentBaocao extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_baocao, container, false);
+        recyclerView = view.findViewById(R.id.recyclerViewChiTiet);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         AppDatabase db = AppDatabase.getInstance(requireContext());
 
@@ -76,6 +125,8 @@ public class FragmentBaocao extends Fragment {
             int month = Integer.parseInt(thangStr);
             int year  = Integer.parseInt(namStr);
 
+
+
             if (month < 1 || month > 12) {
                 Toast.makeText(getContext(), "Tháng không hợp lệ (1-12)!", Toast.LENGTH_SHORT).show();
                 return;
@@ -94,11 +145,91 @@ public class FragmentBaocao extends Fragment {
                 int tienThu = db.chiThuDao().getSoTienThuInRange(fromDate, toDate);
                 int tienDu  = tienThu - tienChi;
 
+                List<ChiThu> dsChiThuThang = db.chiThuDao().getAllInRange(fromDate, toDate);
+
                 requireActivity().runOnUiThread(() -> {
+
                     tvChiTieuThang.setText("Tiền chi tháng " + month + "/" + year + ": " + tienChi);
                     tvThuNhapThang.setText("Tiền thu tháng " + month + "/" + year + ": " + tienThu);
                     tvTienDu.setText("Tiền dư tháng " + month + "/" + year + ": " + tienDu);
+
+                    adapter = new ChiThuBaoCaoAdapter(dsChiThuThang);
+                    recyclerView.setAdapter(adapter);
+                    ItemTouchHelper.SimpleCallback simpleCallback =
+                            new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+                                @Override
+                                public boolean onMove(RecyclerView recyclerView,
+                                                      RecyclerView.ViewHolder viewHolder,
+                                                      RecyclerView.ViewHolder target) {
+                                    return false;
+                                }
+
+                                @Override
+                                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                                    int position = viewHolder.getAdapterPosition();
+                                    ChiThu chiThu = adapter.getItem(position);
+
+                                    // Khôi phục item về vị trí cũ (không xóa ngay)
+                                    adapter.notifyItemChanged(position);
+
+                                    // Hiện dialog xác nhận
+                                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                            .setTitle("Xác nhận xóa")
+                                            .setMessage("Bạn có chắc muốn xóa giao dịch này không?")
+                                            .setPositiveButton("Đồng ý", (dialog, which) -> {
+                                                new Thread(() -> {
+                                                    db.chiThuDao().delete(chiThu);
+                                                    requireActivity().runOnUiThread(() -> {
+                                                        adapter.removeItem(position);
+                                                        Toast.makeText(getContext(), "Đã xóa!", Toast.LENGTH_SHORT).show();
+                                                    });
+                                                }).start();
+                                            })
+                                            .setNegativeButton("Từ chối", (dialog, which) -> {
+                                                // Không làm gì, item đã được restore ở trên
+                                                dialog.dismiss();
+                                            })
+                                            .setCancelable(false)
+                                            .show();
+                                }
+                                @Override
+                                public void onChildDraw(Canvas c, RecyclerView recyclerView,
+                                                        RecyclerView.ViewHolder viewHolder,
+                                                        float dX, float dY,
+                                                        int actionState, boolean isCurrentlyActive) {
+
+                                    View itemView = viewHolder.itemView;
+                                    Paint paint = new Paint();
+
+                                    if (dX < 0) {
+                                        paint.setColor(Color.RED);
+                                        c.drawRect(
+                                                itemView.getRight() + dX,
+                                                itemView.getTop(),
+                                                itemView.getRight(),
+                                                itemView.getBottom(),
+                                                paint
+                                        );
+
+                                        paint.setColor(Color.WHITE);
+                                        paint.setTextSize(40);
+                                        paint.setFakeBoldText(true);
+                                        c.drawText("XÓA",
+                                                itemView.getRight() - 120,
+                                                itemView.getTop() + (itemView.getHeight() / 2),
+                                                paint);
+                                    }
+
+                                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                                }
+                            };
+                    adapter.setOnItemDoubleClickListener(chiThu -> {
+                        showEditDialog(chiThu);
+                    });
+                    new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
                 });
+
             }).start();
         });
 
