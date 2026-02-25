@@ -130,6 +130,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnDiLai"
+                        android:tag="Đi lại"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -153,6 +154,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnMuaSam"
+                        android:tag="Mua sắm"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -183,6 +185,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnSucKhoe"
+                        android:tag="Sức khỏe"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -206,6 +209,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnGiaiTri"
+                        android:tag="Giải trí"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -229,6 +233,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnHoaDon"
+                        android:tag="Hóa đơn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -259,6 +264,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnGiaoDuc"
+                        android:tag="Giáo dục"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -282,6 +288,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnNhaO"
+                        android:tag="Nhà ở"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

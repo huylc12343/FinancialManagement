@@ -1,44 +1,32 @@
 package com.example.chitieuapp.ui.baocao;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chitieuapp.R;
+import com.example.chitieuapp.data.database.AppDatabase;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentBaocao#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Calendar;
+
 public class FragmentBaocao extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    TextView tvThuNhapThang, tvChiTieuThang, tvTienDu;
+    EditText editTextThang, editTextNam;
+    Button btnXem;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private String mParam1, mParam2;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public FragmentBaocao() {}
 
-    public FragmentBaocao() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentBaocao.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FragmentBaocao newInstance(String param1, String param2) {
         FragmentBaocao fragment = new FragmentBaocao();
         Bundle args = new Bundle();
@@ -60,7 +48,60 @@ public class FragmentBaocao extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_baocao, container, false);
+        View view = inflater.inflate(R.layout.fragment_baocao, container, false);
+
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+
+        tvThuNhapThang = view.findViewById(R.id.tvThuNhapThang);
+        tvChiTieuThang = view.findViewById(R.id.tvChiTieuThang);
+        tvTienDu       = view.findViewById(R.id.tvTienDu);
+        editTextThang  = view.findViewById(R.id.editTextThangQuery);
+        editTextNam    = view.findViewById(R.id.editTextNamQuery);
+        btnXem         = view.findViewById(R.id.btnXem);
+
+        // Điền sẵn tháng/năm hiện tại
+        Calendar cal = Calendar.getInstance();
+        editTextThang.setText(String.valueOf(cal.get(Calendar.MONTH) + 1));
+        editTextNam.setText(String.valueOf(cal.get(Calendar.YEAR)));
+
+        btnXem.setOnClickListener(v -> {
+            String thangStr = editTextThang.getText().toString().trim();
+            String namStr   = editTextNam.getText().toString().trim();
+
+            if (thangStr.isEmpty() || namStr.isEmpty()) {
+                Toast.makeText(getContext(), "Vui lòng nhập tháng và năm!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int month = Integer.parseInt(thangStr);
+            int year  = Integer.parseInt(namStr);
+
+            if (month < 1 || month > 12) {
+                Toast.makeText(getContext(), "Tháng không hợp lệ (1-12)!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Tính ngày cuối tháng
+            Calendar lastDay = Calendar.getInstance();
+            lastDay.set(year, month - 1, 1);
+            int maxDay = lastDay.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+            String fromDate = String.format("%04d-%02d-01", year, month);
+            String toDate   = String.format("%04d-%02d-%02d", year, month, maxDay);
+
+            new Thread(() -> {
+                int tienChi = db.chiThuDao().getSoTienChiInRange(fromDate, toDate);
+                int tienThu = db.chiThuDao().getSoTienThuInRange(fromDate, toDate);
+                int tienDu  = tienThu - tienChi;
+
+                requireActivity().runOnUiThread(() -> {
+                    tvChiTieuThang.setText("Tiền chi tháng " + month + "/" + year + ": " + tienChi);
+                    tvThuNhapThang.setText("Tiền thu tháng " + month + "/" + year + ": " + tienThu);
+                    tvTienDu.setText("Tiền dư tháng " + month + "/" + year + ": " + tienDu);
+                });
+            }).start();
+        });
+
+        return view;
     }
 }

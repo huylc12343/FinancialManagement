@@ -15,4 +15,10 @@ public interface ChiThuDao {
 
     @Query("SELECT * FROM ChiThu ORDER BY idChiThu DESC")
     List<ChiThu> getAll();
+
+    @Query("SELECT IFNULL(SUM(sotien), 0) FROM ChiThu WHERE ngay BETWEEN :fromDate AND :toDate AND type = 0")
+    int getSoTienChiInRange(String fromDate, String toDate);
+    @Query("SELECT IFNULL(SUM(sotien), 0) FROM ChiThu WHERE ngay BETWEEN :fromDate AND :toDate AND type = 1")
+    int getSoTienThuInRange(String fromDate, String toDate);
+
 }

@@ -128,6 +128,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnThuong"
+                        android:tag="Thưởng"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -151,6 +152,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnDauTu"
+                        android:tag="Đầu tư"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -181,6 +183,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnBanHang"
+                        android:tag="Bán hàng"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -204,6 +207,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnChoVay"
+                        android:tag="Cho vay"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -227,6 +231,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnTroCap"
+                        android:tag="Trợ cấp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -257,6 +262,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnQuaTang"
+                        android:tag="Quà tặng"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -280,6 +286,7 @@
 
                     <LinearLayout
                         android:id="@+id/btnFreelance"
+                        android:tag="Freelance"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

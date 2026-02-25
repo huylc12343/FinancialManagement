@@ -88,7 +88,7 @@ public class Thu extends Fragment {
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
                     (datePicker, y, m, d) -> {
-                        String date = d + "/" + (m + 1) + "/" + y;
+                        String date = String.format("%04d-%02d-%02d", y, m + 1, d);
                         editTextDateThu.setText(date);
                     }, year, month, day);
 
